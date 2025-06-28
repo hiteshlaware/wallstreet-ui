@@ -1,0 +1,44 @@
+{
+  "accounts": [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "email": "john.doe@example.com",
+      "balance": 5000.75,
+      "accountType": "Savings",
+      "createdDate": "2024-01-15T10:30:00Z"
+    },
+    {
+      "id": 2,
+      "name": "Jane Smith",
+      "email": "jane.smith@example.com",
+      "balance": 12500.50,
+      "accountType": "Checking",
+      "createdDate": "2024-02-20T14:45:00Z"
+    },
+    {
+      "id": 3,
+      "name": "Robert Johnson",
+      "email": "robert.johnson@example.com",
+      "balance": 35000.25,
+      "accountType": "Investment",
+      "createdDate": "2024-03-10T09:15:00Z"
+    },
+    {
+      "id": 4,
+      "name": "Emily Davis",
+      "email": "emily.davis@example.com",
+      "balance": 8750.60,
+      "accountType": "Savings",
+      "createdDate": "2024-03-25T11:20:00Z"
+    },
+    {
+      "id": 5,
+      "name": "Michael Wilson",
+      "email": "michael.wilson@example.com",
+      "balance": 15200.30,
+      "accountType": "Checking",
+      "createdDate": "2024-04-05T16:10:00Z"
+    }
+  ]
+}
