@@ -9,7 +9,7 @@ function AllOrders() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch('http://localhost:8080/api/orders');
+        const response = await fetch('http://localhost:8080/api/accounts/1001/orders');
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);

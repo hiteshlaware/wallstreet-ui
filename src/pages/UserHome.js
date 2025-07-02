@@ -4,7 +4,7 @@ import './UserHome.css';
 
 function UserHome() {
   const [orderType, setOrderType] = useState('BUY');
-  const [targetType, setTargetType] = useState('Shares');
+  const [targetType, setTargetType] = useState('SHARES');
   const [symbol, setSymbol] = useState('');
   const [target, setTarget] = useState('');
   const [portfolio, setPortfolio] = useState([]);
@@ -26,13 +26,13 @@ function UserHome() {
     e.preventDefault();
     try {
       const orderData = {
-        accountId: 1,
+        accountId: 1001,
         symbol,
         orderType,
         targetType,
         target: parseFloat(target)
       };
-      await axios.post('http://localhost:8080/api/orders', orderData);
+      await axios.post('http://localhost:8080/api/accounts/1001/orders', orderData);
       // Refresh portfolio after order
       fetchPortfolio();
       // Reset form
@@ -50,7 +50,7 @@ function UserHome() {
         await axios.post('/api/orders', {
           symbol: portfolioItem.symbol,
           orderType: 'SELL',
-          targetType: 'Shares',
+          targetType: 'SHARES',
           target: portfolioItem.quantity
         });
         fetchPortfolio();
@@ -98,15 +98,15 @@ function UserHome() {
             <div className="toggle-buttons">
               <button
                 type="button"
-                className={targetType === 'Shares' ? 'active' : ''}
-                onClick={() => setTargetType('Shares')}
+                className={targetType === 'SHARES' ? 'active' : ''}
+                onClick={() => setTargetType('SHARES')}
               >
                 Shares
               </button>
               <button
                 type="button"
-                className={targetType === 'Dollars' ? 'active' : ''}
-                onClick={() => setTargetType('Dollars')}
+                className={targetType === 'DOLLARS' ? 'active' : ''}
+                onClick={() => setTargetType('DOLLARS')}
               >
                 Dollars
               </button>
@@ -114,13 +114,13 @@ function UserHome() {
           </div>
 
           <div className="form-group">
-            <label>{targetType === 'Shares' ? 'Number of Shares:' : 'Dollar Amount:'}</label>
+            <label>{targetType === 'SHARES' ? 'Number of Shares:' : 'Dollar Amount:'}</label>
             <input
               type="number"
               value={target}
               onChange={(e) => setTarget(e.target.value)}
               min="0"
-              step={targetType === 'Shares' ? '1' : '0.01'}
+              step={targetType === 'SHARES' ? '1' : '0.01'}
               required
             />
           </div>
