@@ -1,18 +1,22 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import './Signup.css';
 
 function Signup() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     username: '',
     password: '',
+    repassword: '',
     email: '',
     phone: ''
   });
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -26,9 +30,18 @@ function Signup() {
     e.preventDefault();
     setMessage('');
     setError('');
+    setLoading(true);
+
+    // Check if passwords match
+    if (formData.password !== formData.repassword) {
+      setError('Passwords do not match');
+      setLoading(false);
+      return;
+    }
 
     try {
-      const response = await fetch('http://localhost:8080/api/accounts', {
+      // Create account
+      const createResponse = await fetch('http://localhost:8080/api/auth/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -36,23 +49,49 @@ function Signup() {
         body: JSON.stringify(formData)
       });
 
-      if (!response.ok) {
+      if (!createResponse.ok) {
         throw new Error('Failed to create account');
       }
 
-      await response.json();
+      const accountData = await createResponse.json();
+
+      // Then authenticate the user
+      const authResponse = await fetch('http://localhost:8080/api/auth/signin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: formData.username,
+          password: formData.password
+        })
+      });
+
+      if (!authResponse.ok) {
+        throw new Error('Account created but login failed');
+      }
+
+      const authData = await authResponse.json();
+      
+      // Log the user in
+      login(authData.user, authData.token);
+      
       setMessage('Account created successfully!');
       // Redirect to UserHome after successful signup
       navigate('/home');
+      
       setFormData({
         name: '',
         username: '',
         password: '',
+        repassword: '',
         email: '',
         phone: ''
       });
     } catch (err) {
       setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -101,6 +140,18 @@ function Signup() {
         </div>
 
         <div className="form-group">
+          <label htmlFor="repassword">Confirm Password:</label>
+          <input
+            type="password"
+            id="repassword"
+            name="repassword"
+            value={formData.repassword}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+
+        <div className="form-group">
           <label htmlFor="email">Email:</label>
           <input
             type="email"
@@ -124,7 +175,9 @@ function Signup() {
           />
         </div>
 
-        <button type="submit" className="submit-button">Sign Up</button>
+        <button type="submit" className="submit-button" disabled={loading}>
+          {loading ? 'Creating Account...' : 'Sign Up'}
+        </button>
       </form>
     </div>
   );
